@@ -25,15 +25,11 @@ def roll_dice(num_rolls, dice=six_sided):
         outcome, i = dice(), i + 1
         outcomes.append(outcome)
     if 1 in outcomes:
-        print(outcomes)
         return outcomes.count(1)
     else:
-        result = 0
-        for o in outcomes:
-            result = result + o
-        print(outcomes)
-        return result
+        return sum(outcomes)
     # END PROBLEM 1
+
 
 def free_bacon(opponent_score):
     """Return the points scored from rolling 0 dice (Free Bacon)."""
@@ -55,7 +51,6 @@ def is_prime(num):
 
 
 def next_prime(num):
-    assert is_prime(num), 'not a prime!'
     result = num + 1
     while not is_prime(result):
         result = result + 1
@@ -239,7 +234,10 @@ def check_strategy(strategy, goal=GOAL_SCORE):
     AssertionError: strategy(102, 115) returned 100 (invalid number of rolls)
     """
     # BEGIN PROBLEM 6
-    "*** REPLACE THIS LINE ***"
+    for score in range(goal):
+        for opponent_score in range(goal):
+            check_strategy_roll(score, opponent_score,
+                                strategy(score, opponent_score))
     # END PROBLEM 6
 
 
@@ -257,7 +255,13 @@ def make_averaged(fn, num_samples=1000):
     3.75
     """
     # BEGIN PROBLEM 7
-    "*** REPLACE THIS LINE ***"
+    def average(*args):
+        result, i = 0, 0
+        while i < num_samples:
+            result += fn(*args)
+            i += 1
+        return result / num_samples
+    return average
     # END PROBLEM 7
 
 
@@ -271,7 +275,14 @@ def max_scoring_num_rolls(dice=six_sided, num_samples=1000):
     10
     """
     # BEGIN PROBLEM 8
-    "*** REPLACE THIS LINE ***"
+    average, max_roll = make_averaged(
+        roll_dice, num_samples), 1
+    max_average = average(1, dice)
+    for i in range(1, 11):
+        if average(i, dice) > max_average:
+            max_roll = i
+            max_average = average(i, dice)
+    return max_roll
     # END PROBLEM 8
 
 
@@ -302,7 +313,7 @@ def run_experiments():
         rerolled_max = max_scoring_num_rolls(reroll(six_sided))
         print('Max scoring num rolls for re-rolled dice:', rerolled_max)
 
-    if False:  # Change to True to test always_roll(8)
+    if True:  # Change to True to test always_roll(8)
         print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
 
     if False:  # Change to True to test bacon_strategy
@@ -321,8 +332,10 @@ def bacon_strategy(score, opponent_score, margin=8, num_rolls=4):
     and rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 9
-    "*** REPLACE THIS LINE ***"
-    return 4  # Replace this statement
+    score_bacon = free_bacon(opponent_score)
+    if is_prime(score_bacon):
+        score_bacon = next_prime(score_bacon)
+    return 0 if score_bacon >= margin else num_rolls
     # END PROBLEM 9
 check_strategy(bacon_strategy)
 
@@ -333,8 +346,10 @@ def swap_strategy(score, opponent_score, margin=8, num_rolls=4):
     NUM_ROLLS.
     """
     # BEGIN PROBLEM 10
-    "*** REPLACE THIS LINE ***"
-    return 4  # Replace this statement
+    score_bacon = free_bacon(opponent_score)
+    if is_prime(score_bacon):
+        score_bacon = next_prime(score_bacon)
+    return 0 if ((score_bacon >= margin) or (2 * (score + score_bacon) == opponent_score)) else num_rolls
     # END PROBLEM 10
 check_strategy(swap_strategy)
 
@@ -345,8 +360,15 @@ def final_strategy(score, opponent_score):
     *** YOUR DESCRIPTION HERE ***
     """
     # BEGIN PROBLEM 11
-    "*** REPLACE THIS LINE ***"
-    return 4  # Replace this statement
+    if score == 0:
+        return -1
+    if score > opponent_score and free_bacon(opponent_score) + score == 2 * opponent_score:
+        return 4
+    if is_prime(score + free_bacon(opponent_score)):
+        return 0
+    if score > 50:
+        return 0
+    return swap_strategy(score, opponent_score, 6, 4)
     # END PROBLEM 11
 check_strategy(final_strategy)
 
