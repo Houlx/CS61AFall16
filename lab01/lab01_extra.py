@@ -2,6 +2,7 @@
 
 # If Statements
 
+
 def xk(c, d):
     if c == 4:
         return 6
@@ -9,6 +10,7 @@ def xk(c, d):
         return 6 + 7 + c
     else:
         return 25
+
 
 def how_big(x):
     if x > 10:
@@ -20,6 +22,7 @@ def how_big(x):
     else:
         print("nothin'")
 
+
 def so_big(x):
     if x > 10:
         print('huge')
@@ -29,12 +32,14 @@ def so_big(x):
         print('small')
     print("nothin'")
 
+
 def ab(c, d):
     if c > 5:
         print(c)
     elif c > 7:
         print(d)
     print('foo')
+
 
 def bake(cake, make):
     if cake == 0:
@@ -48,6 +53,7 @@ def bake(cake, make):
 
 # Boolean Operators
 
+
 def both_positive(x, y):
     """Returns True if both x and y are positive.
 
@@ -56,9 +62,10 @@ def both_positive(x, y):
     >>> both_positive(1, 1)
     True
     """
-    return x and y > 0 # You can replace this line!
+    return x > 0 and y > 0
 
 # While Loops
+
 
 def falling(n, k):
     """Compute the falling factorial of n to depth k.
@@ -73,6 +80,10 @@ def falling(n, k):
     4
     """
     "*** YOUR CODE HERE ***"
+    if k == 0:
+        return 1
+    else:
+        return n * falling(n - 1, k - 1)
 
 # Guessing Game
 
@@ -81,15 +92,17 @@ from random import randint
 LOWER = 1
 UPPER = 10
 
+
 def guess_random():
     """Guess randomly and return the number of guesses."""
     prompt_for_number(LOWER, UPPER)   # asks the user to choose a number
     num_guesses, correct = 0, False
     while not correct:
-        guess = randint(LOWER, UPPER) # randomly guess
+        guess = randint(LOWER, UPPER)  # randomly guess
         correct = is_correct(guess)   # ask user if guess is correct
         num_guesses = num_guesses + 1
     return num_guesses
+
 
 def guess_linear():
     """Guess in increasing order and return the number of guesses."""
@@ -97,7 +110,16 @@ def guess_linear():
     num_guesses = 1
     guess = LOWER
     "*** YOUR CODE HERE ***"
-    return num_guesses
+    correct = False
+    while not correct and guess <= 10:
+        correct = is_correct(guess)
+        guess += 1
+        num_guesses += 1
+    if not correct:
+        print('what the fuxk number did you pick?!')
+        return None
+    return num_guesses - 1
+
 
 def guess_binary():
     """Return the number of attempted guesses. Implement a faster search
@@ -112,34 +134,49 @@ def guess_binary():
     lower, upper = LOWER, UPPER
     guess = (lower + upper) // 2
     "*** YOUR CODE HERE ***"
+    correct = False
+    while not correct:
+        if is_too_high(guess):
+            upper = guess
+            guess = (lower + upper) // 2
+        else:
+            lower = guess
+            guess = (lower + upper) // 2
+        correct = is_correct(guess)
+        num_guesses += 1
     return num_guesses
 
 # Receive user input. You do not need to understand the code below this line.
+
 
 def prompt_for_number(lower, upper):
     """Prompt the user for a number between lower and upper. Return None."""
     is_valid_number = False
     while not is_valid_number:
         # You don't need to understand the following two lines.
-        number = input('Pick an integer between {0} and {1} (inclusive) for me to guess: '.format(lower, upper))
+        number = input(
+            'Pick an integer between {0} and {1} (inclusive) for me to guess: '.format(lower, upper))
         number = int(number)
         if lower <= number <= upper:
             is_valid_number = True
+
 
 def is_correct(guess):
     """Ask the user if a guess is correct and return whether they respond y."""
     return is_yes('Is {0} your number? [y/n] '.format(guess))
 
+
 def is_too_high(guess):
     """Ask the user if a guess is too high and return whether they say yes."""
     return is_yes('Is {0} too high? [y/n] '.format(guess))
 
+
 def is_yes(prompt):
     """Ask the user a yes or no question and return whether they say yes."""
-    while True: # This while statement will loop until a "return" is reached.
+    while True:  # This while statement will loop until a "return" is reached.
         yes_no = input(prompt).strip()
-        if yes_no == 'y':
+        if yes_no == 'y' or yes_no == 'Y':
             return True
-        elif yes_no == 'n':
+        elif yes_no == 'n' or yes_no == 'N':
             return False
         print('Please type y or n and press return/enter')

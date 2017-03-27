@@ -2,6 +2,7 @@
 
 # Coding Practice
 
+
 def repeated(f, n, x):
     """Returns the result of composing f n times on x.
 
@@ -27,6 +28,11 @@ def repeated(f, n, x):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        return f(x)
+    else:
+        return f(repeated(f, n - 1, x))
+
 
 def sum_digits(n):
     """Sum all the digits of n.
@@ -39,6 +45,8 @@ def sum_digits(n):
     45
     """
     "*** YOUR CODE HERE ***"
+    return sum(int(number) for number in str(n))
+
 
 def double_eights(n):
     """Return true if n has two eights in a row.
@@ -54,3 +62,4 @@ def double_eights(n):
     False
     """
     "*** YOUR CODE HERE ***"
+    return '88' in str(n)
